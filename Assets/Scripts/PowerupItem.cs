@@ -6,35 +6,38 @@ public class PowerupItem : MonoBehaviour
 {
     [SerializeField]
     private float _itemDropSpeed = 3.0f;
+    private GameManager _gameManager;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _itemDropSpeed * Time.deltaTime);
-        if (transform.position.y < -5.0f)
+        if (!_gameManager.IsGameOver())
         {
-            Destroy(this.gameObject);
+            transform.Translate(Vector3.down * _itemDropSpeed * Time.deltaTime);
+            if (transform.position.y < -5.0f)
+            {
+                Destroy(gameObject);
+            }
         }
+        else Destroy(gameObject);
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(this.gameObject.tag);
-        Debug.Log("collided with" + collision.tag.ToString());
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("collide with player");
             Player player = collision.transform.GetComponent<Player>();
             if (player != null)
             {
-                player.GetPowerUp(this.gameObject.tag);
-                Destroy(this.gameObject);
+                player.GetPowerUp(gameObject.tag);
+                Destroy(gameObject);
             }
         }
     }

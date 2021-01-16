@@ -27,7 +27,12 @@ public class SpawnManager : MonoBehaviour
         _player = GameObject.Find("Player").GetComponent<Player>();
         while (_player.GetPlayerLife() > 0)
         {
-            Vector3 spawnPos = new Vector3(Random.Range(-9f, 9f), 7, 0);
+            Vector3 spawnPos;
+            do
+            {
+                spawnPos = new Vector3(Random.Range(-9f, 9f), 7, 0);
+            } while (Physics.OverlapSphere(spawnPos, 1f).Length > 1);
+
             GameObject newEnemy = Instantiate(_enemyPrefab, spawnPos, Quaternion.identity);
             newEnemy.transform.parent = _enemyContainer.transform;
             yield return new WaitForSeconds(Random.Range(1f, 3f));
@@ -37,11 +42,13 @@ public class SpawnManager : MonoBehaviour
     IEnumerator PowerUpSpawnRoutine()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+        GameObject powerup = null;
+
         while (_player.GetPlayerLife() > 0)
         {
-            yield return new WaitForSeconds(Random.Range(25f, 40f));
+            yield return new WaitForSeconds(Random.Range(15f, 30f));
             int randPU = Random.Range(1, 4);
-            GameObject powerup = powerupType[randPU - 1];
+            powerup = powerupType[randPU - 1];
             Vector3 spawnPos = new Vector3(Random.Range(-9f, 9f), 7, 0);
             if (powerup != null)
             {

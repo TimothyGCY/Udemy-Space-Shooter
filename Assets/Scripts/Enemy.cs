@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField]
-    private int _enemySpd = 5;
+    private int _enemySpd;
 
+    private GameManager _gameManager;
     private Player _player;
     private UIManager _uiManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         _player = GameObject.Find("Player").GetComponent<Player>();
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         transform.position = new Vector3(Random.Range(-9f, 9f), 7f, 0);
-        StartCoroutine(IncreaseDifficultyRoutine());
     }
 
     // Update is called once per frame
     void Update()
     {
+        _enemySpd = _gameManager.GetCurrentSpeed();
         transform.Translate(Vector3.down * _enemySpd * Time.deltaTime);
         float randomX = Random.Range(-9f, 9f);
 
@@ -33,10 +34,10 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        
+
         if (other.CompareTag("Laser"))
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             Destroy(other.gameObject);
             if (_player != null)
             {
@@ -47,19 +48,9 @@ public class Enemy : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
+            Destroy(gameObject);
             Player player = other.transform.GetComponent<Player>();
-            if (player != null)
-            {
-                player.Damage();
-                Destroy(this.gameObject);
-            }
+            if (player != null) player.Damage();
         }
-    }
-
-    IEnumerator IncreaseDifficultyRoutine()
-    {
-        // current issue, only change a single instance
-        yield return new WaitForSeconds(30.0f);
-        _enemySpd += 5;
     }
 }

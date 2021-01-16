@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private int _playerSpd = 15, _playerLife = 3;
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -14,10 +13,9 @@ public class Player : MonoBehaviour
 
     private UIManager _uiManager;
 
+    private int _playerSpd = 15, _playerLife = 3, _score = 0;
     private float _fireRate = 0.5f, _canFire = -1f;
     private bool _tripleShotEnabled = false, _shieldEnabled = false, _speedUpEnabled = false;
-    private int _score = 0;
-
 
 
     // Start is called before the first frame update
@@ -67,12 +65,12 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        if (_shieldEnabled == false)
+        if (!_shieldEnabled)
         {
-            if (_playerLife > 1)
+            _playerLife--;
+            _uiManager.UpdateLife(GetPlayerLife());
+            if (_playerLife > 0)
             {
-                _playerLife--;
-                _uiManager.UpdateLife(_playerLife);
                 _tripleShotEnabled = false;
                 if (_speedUpEnabled == true)
                 {
@@ -83,14 +81,12 @@ public class Player : MonoBehaviour
             }
             else
             {
-                _playerLife--;
-                Destroy(this.gameObject);
+                Destroy(gameObject);
                 _uiManager.ShowGameOver();
             }
-        } else
-        {
-            _shieldEnabled = false;
+
         }
+        else _shieldEnabled = false;
     }
 
     public void GetPowerUp(string powerup)
