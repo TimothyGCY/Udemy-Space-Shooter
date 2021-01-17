@@ -15,12 +15,21 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.anyKey && _isGameOver) // this include mouse click
-        if (Input.GetKeyDown(KeyCode.R) && _isGameOver)
+        if (_isGameOver)
         {
-            SceneManager.LoadScene(0); // current game scene
-            // SceneManager.LoadScene("Game"); // when you have multi scene
+            // if (Input.anyKey && _isGameOver) // this include mouse click
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                SceneManager.LoadScene(1); // current game scene
+            }
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                SceneManager.LoadScene(0);
+            }
         }
+        
+
+
     }
 
     public void GameOver()
