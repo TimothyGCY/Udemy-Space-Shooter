@@ -18,12 +18,18 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void StartGameRountine()
+    {
         StartCoroutine(EnemySpawnRoutine());
         StartCoroutine(PowerUpSpawnRoutine());
     }
 
     IEnumerator EnemySpawnRoutine()
     {
+        yield return new WaitForSeconds(1f);
         _player = GameObject.Find("Player").GetComponent<Player>();
         while (_player.GetPlayerLife() > 0)
         {

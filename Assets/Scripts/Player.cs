@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private UIManager _uiManager;
 
     private int _playerSpd = 15, _playerLife = 3, _score = 0;
-    private float _fireRate = 0.5f, _canFire = -1f;
+    private float _fireRate = 0.25f, _canFire = -1f;
     private bool _tripleShotEnabled = false, _shieldEnabled = false, _speedUpEnabled = false;
 
 
@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        if (!_shieldEnabled)
+        if (_shieldEnabled == false)
         {
             _playerLife--;
             _uiManager.UpdateLife(GetPlayerLife());
@@ -75,6 +75,7 @@ public class Player : MonoBehaviour
                 if (_speedUpEnabled == true)
                 {
                     _speedUpEnabled = false;
+                    _fireRate *= 2;
                     _playerSpd /= 2;
                 }
                 transform.position = new Vector3(0, -3.8f, 0);
@@ -102,6 +103,7 @@ public class Player : MonoBehaviour
                 break;
             case "SpeedUp":
                 _speedUpEnabled = true;
+                _fireRate /= 2;
                 _playerSpd *= 2;
                 break;
             default: break;
@@ -119,6 +121,7 @@ public class Player : MonoBehaviour
                 break;
             case "SpeedUp":
                 _speedUpEnabled = false;
+                _fireRate *= 2;
                 _playerSpd /= 2;
                 break;
             default: break;
