@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private GameObject _tripleShotPrefab;
     [SerializeField]
     private GameObject _shieldPrefab;
+    [SerializeField]
+    private GameObject _leftBurn, _rightBurn;
 
     private UIManager _uiManager;
 
@@ -88,6 +90,15 @@ public class Player : MonoBehaviour
 
         }
         else _shieldEnabled = false;
+
+        if (_playerLife == 2)
+        {
+            _leftBurn.SetActive(true);
+        }
+        if (_playerLife == 1)
+        {
+            _rightBurn.SetActive(true);
+        }
     }
 
     public void GetPowerUp(string powerup)
