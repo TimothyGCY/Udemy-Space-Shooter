@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    const int PLAYER_SHOOT_LASER = 0, PLAYER_GET_POWER_UP = 1, PLAYER_GET_DAMAGE = 2;
+
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
@@ -12,6 +15,10 @@ public class Player : MonoBehaviour
     private GameObject _shieldPrefab;
     [SerializeField]
     private GameObject _leftBurn, _rightBurn;
+
+    [SerializeField]
+    private AudioClip[] _audioClips;
+    private AudioSource _audioSource;
 
     private UIManager _uiManager;
 
@@ -25,6 +32,7 @@ public class Player : MonoBehaviour
     {
         transform.position = new Vector3(0, -3.8f, 0);
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -52,17 +60,10 @@ public class Player : MonoBehaviour
     void ShootLaser()
     {
         _canFire = Time.time + _fireRate;
-        GameObject laser;
+        GameObject laser = _tripleShotEnabled ? _tripleShotPrefab : _laserPrefab;
+        Instantiate(laser, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity);
 
-        if (_tripleShotEnabled == false)
-        {
-            laser = _laserPrefab;
-        }
-        else
-        {
-            laser = _tripleShotPrefab;
-        }
-        Instantiate(laser, transform.position + new Vector3(0, 0.8f, 0), Quaternion.identity); ;
+        PlaySoundFX(PLAYER_SHOOT_LASER);
     }
 
     public void Damage()
@@ -87,7 +88,7 @@ public class Player : MonoBehaviour
                 Destroy(gameObject);
                 _uiManager.ShowGameOver();
             }
-
+            PlaySoundFX(PLAYER_GET_DAMAGE);
         }
         else _shieldEnabled = false;
 
@@ -119,6 +120,7 @@ public class Player : MonoBehaviour
                 break;
             default: break;
         }
+        PlaySoundFX(PLAYER_GET_POWER_UP);
         StartCoroutine(PowerDownRoutine(powerup));
     }
 
@@ -152,5 +154,11 @@ public class Player : MonoBehaviour
     public int GetPlayerScore()
     {
         return _score;
+    }
+
+    private void PlaySoundFX(int type)
+    {
+        _audioSource.clip = _audioClips[type];
+        _audioSource.Play();
     }
 }

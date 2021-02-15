@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    private int _enemySpd;
+    [SerializeField]
+    private AudioClip _audioClip;
+    private AudioSource _audioSource;
 
+    private int _enemySpd;
     private GameManager _gameManager;
     private Player _player;
     private UIManager _uiManager;
@@ -19,6 +22,8 @@ public class Enemy : MonoBehaviour
         _uiManager = GameObject.Find("UIManager").GetComponent<UIManager>();
         transform.position = new Vector3(Random.Range(-9f, 9f), 7f, 0);
         _anim = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
+        _audioSource.clip = _audioClip;
     }
 
     // Update is called once per frame
@@ -33,7 +38,7 @@ public class Enemy : MonoBehaviour
             transform.position = new Vector3(randomX, 7.5f, 0);
         }
 
-        
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -41,8 +46,10 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Laser"))
         {
             gameObject.GetComponent<Collider2D>().enabled = false;
+            gameObject.GetComponent<Enemy>().enabled = false;
             _anim.SetTrigger("OnEnemyDestroy");
             Destroy(gameObject, 2.8f);
+            _audioSource.Play();
             Destroy(other.gameObject);
             if (_player != null)
             {
